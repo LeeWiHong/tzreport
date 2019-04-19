@@ -2,6 +2,12 @@ package com.gz.tzreport.controller;
 
 
 import com.alibaba.fastjson.JSON;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.gz.tzreport.annotation.UserLoginToken;
 import com.gz.tzreport.dao.TbUsersPersonInfo;
 import com.gz.tzreport.pojo.TbRoles;
 import com.gz.tzreport.pojo.TbUsers;
@@ -27,6 +33,7 @@ import java.security.cert.X509Certificate;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 
 @RestController
 
@@ -42,9 +49,136 @@ public class UsersController {
     @Autowired
     private TokenService tokenService;
 
+    @UserLoginToken
+    @RequestMapping("/p1")
+    public String test(){
+        return "leewihong";
+    }
+
+    /**
+    * @description: 退出
+    *
+    * @return:
+    **/
+
+    @RequestMapping("/loginout")
+    public JsonDTO loginout(@RequestParam(value = "token") String token){
+        // 获取 token 中的 user id
+        JsonDTO jsonDTO = new JsonDTO();
+        String userId;
+        try {
+            userId = JWT.decode(token).getAudience().get(0);
+        } catch (JWTDecodeException j) {
+            throw new CustomException(ExceptionEnum.LOGIN_TOKEN_UNDECODE.getHttpStatus(),ExceptionEnum.LOGIN_TOKEN_UNDECODE.getMsgcode(),ExceptionEnum.LOGIN_TOKEN_UNDECODE.getMsgdesc());
+        }
+
+        TbUsers tbUsers = usersServiceInterface.selectByPrimaryKey(Integer.valueOf(userId));
+        if (tbUsers == null) {
+            throw new CustomException(ExceptionEnum.LOGIN_USER_NOTEXISTED.getHttpStatus(),ExceptionEnum.LOGIN_USER_NOTEXISTED.getMsgcode(),ExceptionEnum.LOGIN_USER_NOTEXISTED.getMsgdesc());
+        }
+        tbUsers.setUserToken(null);
+        tbUsers.setOnlineState("1");
+        usersServiceInterface.updateTokenByPrimaryKey(tbUsers);
+        if (usersServiceInterface.updateTokenByPrimaryKey(tbUsers) > 0){
+            jsonDTO.setJsonDTO(true,ExceptionEnum.LOGINOUT_USER_SUCCESS.getMsgcode(),ExceptionEnum.LOGINOUT_USER_SUCCESS.getMsgdesc(),new ArrayList<>());
+        }
+        else {
+            jsonDTO.setJsonDTO(false,ExceptionEnum.LOGINOUT_USER_FAILURE.getMsgcode(),ExceptionEnum.LOGINOUT_USER_FAILURE.getMsgdesc(),new ArrayList<>());
+        }
+        return jsonDTO;
+    }
+
+
+    /**
+    * @description: 登录
+    *
+    * @return:
+    **/
+
+    @RequestMapping("/login")
+    public JsonDTO login(@RequestParam(value = "telephone") String telephone,@RequestParam(value = "password") String password){
+        JsonDTO jsonDTO = new JsonDTO();
+        if (ValidatorFormatCheckTools.isPhoneLegal(telephone)){
+//            1.根据电话号码查询用户
+            TbUsers tbUsers = usersServiceInterface.selectByTelephone(telephone).get(0);
+            if (tbUsers != null){
+                String MD5Password = null;
+//                2.解密传过来的密码
+                try {
+                    PrivateKey privateKey = WHEncryptTools.getPemPrivateKey("rsa_private_key.pem","RSA");
+                    String decrypassword = WHEncryptTools.RSADecrypt(password,privateKey);
+                    MD5Password = WHEncryptTools.MD5Encode(decrypassword,"utf-8");
+                }
+                catch (IOException e){
+                    throw new CustomException(ExceptionEnum.SYSTEN_NOT_FOUNDFILE.getHttpStatus(),ExceptionEnum.SYSTEN_NOT_FOUNDFILE.getMsgcode(),ExceptionEnum.SYSTEN_NOT_FOUNDFILE.getMsgdesc());
+                }
+                catch (NoSuchAlgorithmException e){
+                    throw new CustomException(ExceptionEnum.SYSTEN_NO_ALGORITHM.getHttpStatus(),ExceptionEnum.SYSTEN_NO_ALGORITHM.getMsgcode(),ExceptionEnum.SYSTEN_NO_ALGORITHM.getMsgdesc());
+                }
+                catch (InvalidKeySpecException e){
+                    throw new CustomException(ExceptionEnum.SYSTEN_ALGORITHM_KEY_INVALID.getHttpStatus(),ExceptionEnum.SYSTEN_ALGORITHM_KEY_INVALID.getMsgcode(),ExceptionEnum.SYSTEN_ALGORITHM_KEY_INVALID.getMsgdesc());
+                }
+                catch (Exception e){
+                    throw new CustomException(ExceptionEnum.SYSTEN_ALGORITHM_UNKNOWN_ERROR.getHttpStatus(),ExceptionEnum.SYSTEN_ALGORITHM_UNKNOWN_ERROR.getMsgcode(),ExceptionEnum.SYSTEN_ALGORITHM_UNKNOWN_ERROR.getMsgdesc());
+                }
+
+                if (MD5Password.equals(tbUsers.getUserPassword())){
+//                        3.返回一些个人信息回去
+                    String token = tokenService.getToken(tbUsers);
+                    tbUsers.setUserToken(token);
+//                        4.更新用户对应的token
+                    usersServiceInterface.updateByPrimaryKey(tbUsers);
+                    TbUsersPersonInfo personInfo = new TbUsersPersonInfo();
+                    personInfo.setUserId(tbUsers.getUserId());
+                    personInfo.setUserName(tbUsers.getUserName());
+                    personInfo.setHeadImage(tbUsers.getHeadImage());
+                    personInfo.setUserTelephone(tbUsers.getUserTelephone());
+                    personInfo.setUserToken(token);
+                    jsonDTO.setJsonDTO(true, ExceptionEnum.LOGIN_USER_SUCCESS.getMsgcode(), ExceptionEnum.LOGIN_USER_SUCCESS.getMsgdesc(), personInfo);
+                }
+                else {
+                    jsonDTO.setJsonDTO(false,ExceptionEnum.LOGIN_PASSWORD_ERROR.getMsgcode(),ExceptionEnum.LOGIN_PASSWORD_ERROR.getMsgdesc(),new ArrayList<>());
+                }
+
+            }
+            else {
+                jsonDTO.setJsonDTO(false,ExceptionEnum.LOGIN_USER_NOTEXISTED.getMsgcode(),ExceptionEnum.LOGIN_USER_NOTEXISTED.getMsgdesc(),new ArrayList<>());
+            }
+
+        }else {
+            jsonDTO.setJsonDTO(false,ExceptionEnum.MOB_TELEPHONE_FORMAT_ERROR.getMsgcode(),ExceptionEnum.MOB_TELEPHONE_FORMAT_ERROR.getMsgdesc(),new ArrayList<>());
+        }
+        return jsonDTO;
+    }
+
+
+    /**
+    * @description: 获取公钥
+    *
+    * @return:
+    **/
     @RequestMapping("/getpublickey")
-    public JsonDTO getpublickey(String username){
-        return null;
+    public JsonDTO getpublickey(){
+        JsonDTO jsonDTO = new JsonDTO();
+        PublicKey publicKey = null;
+        String publicKeystr = null;
+        try {
+            publicKey = WHEncryptTools.getPemPublicKey("rsa_public_key.pem");
+            publicKeystr = new String(Base64.getEncoder().encode(publicKey.getEncoded()));
+        }
+        catch (IOException e){
+            throw new CustomException(ExceptionEnum.SYSTEN_NOT_FOUNDFILE.getHttpStatus(),ExceptionEnum.SYSTEN_NOT_FOUNDFILE.getMsgcode(),ExceptionEnum.SYSTEN_NOT_FOUNDFILE.getMsgdesc());
+        }
+        catch (NoSuchAlgorithmException e){
+            throw new CustomException(ExceptionEnum.SYSTEN_NO_ALGORITHM.getHttpStatus(),ExceptionEnum.SYSTEN_NO_ALGORITHM.getMsgcode(),ExceptionEnum.SYSTEN_NO_ALGORITHM.getMsgdesc());
+        }
+        catch (InvalidKeySpecException e){
+            throw new CustomException(ExceptionEnum.SYSTEN_ALGORITHM_KEY_INVALID.getHttpStatus(),ExceptionEnum.SYSTEN_ALGORITHM_KEY_INVALID.getMsgcode(),ExceptionEnum.SYSTEN_ALGORITHM_KEY_INVALID.getMsgdesc());
+        }
+        HashMap hashMap = new HashMap();
+        hashMap.put("publickey",publicKeystr);
+        jsonDTO.setJsonDTO(true,ExceptionEnum.SYSTEN_GET_KEY_SUCCESS.getMsgcode(),ExceptionEnum.SYSTEN_GET_KEY_SUCCESS.getMsgdesc(),hashMap);
+        return jsonDTO;
     }
 
     /**
@@ -59,6 +193,7 @@ public class UsersController {
         if (ValidatorFormatCheckTools.isUsername(username)){
             if (ValidatorFormatCheckTools.isPhoneLegal(telephone)){
                 if (password.equals(repeatpassword)){
+
                     if (usersServiceInterface.selectByTelephone(telephone).size() > 0){
                         jsonDTO.setJsonDTO(false,ExceptionEnum.LOGIN_TELEPHONE_HASEXISTED.getMsgcode(),ExceptionEnum.LOGIN_TELEPHONE_HASEXISTED.getMsgdesc(),new ArrayList<>());
                     }
@@ -94,6 +229,8 @@ public class UsersController {
                     }
 
                 }
+
+
                 else {
                     jsonDTO.setJsonDTO(false,ExceptionEnum.LOGIN_PASSWORD_UNFIT.getMsgcode(),ExceptionEnum.LOGIN_PASSWORD_UNFIT.getMsgdesc(),new ArrayList<>());
                 }

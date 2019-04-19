@@ -45,4 +45,7 @@ public interface TbUsersMapper {
     int updateByPrimaryKey(TbUsers record);
 
     List<TbUsers> selectByTelephone(String telephone);
+
+    int updateTokenByPrimaryKey(TbUsers tbUsers);
+
 }

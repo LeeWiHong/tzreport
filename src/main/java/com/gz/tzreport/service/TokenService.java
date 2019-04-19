@@ -12,7 +12,7 @@ public class TokenService {
 
         String token = "";
         token = JWT.create()
-                .withAudience(tbUsers.getUserPassword().toString())
+                .withAudience(tbUsers.getUserId().toString())
 
                 .sign(Algorithm.HMAC256(tbUsers.getUserPassword()));
         return token;

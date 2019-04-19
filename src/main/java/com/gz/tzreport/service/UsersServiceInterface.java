@@ -18,6 +18,7 @@ public interface UsersServiceInterface {
 
     List<TbUsers> selectByTelephone(String telephone);
 
+    int updateTokenByPrimaryKey(TbUsers tbUsers);
 
 
 }

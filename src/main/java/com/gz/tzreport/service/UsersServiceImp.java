@@ -42,4 +42,9 @@ public class UsersServiceImp implements UsersServiceInterface {
     public List<TbUsers> selectByTelephone(String telephone) {
         return tbUsersMapper.selectByTelephone(telephone);
     }
+
+    @Override
+    public int updateTokenByPrimaryKey(TbUsers tbUsers) {
+        return tbUsersMapper.updateTokenByPrimaryKey(tbUsers);
+    }
 }
