@@ -3,10 +3,7 @@ package com.gz.tzreport.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.gz.tzreport.annotation.UserLoginToken;
 import com.gz.tzreport.dao.TbUsersPersonInfo;
 import com.gz.tzreport.pojo.TbRoles;
@@ -265,7 +262,7 @@ public class UsersController {
                 //            拿到手机号跟提交的验证码去SMSSDK服务器请求验证结果是否正确
                 String address = "https://webapi.sms.mob.com/sms/verify";
 //            appkey写成固定的同时国内的区号都固定为86,上传git的时候key去掉
-                String params = "appkey="+"148b4c395d8c0"+"&"+"phone="+telephone+"&zone=86&&code="+code;
+                String params = "appkey="+""+"&"+"phone="+telephone+"&zone=86&&code="+code;
                 String result = requestData(address,params);
 //           验证返回的结果是不是正确的,如果是正确的返回前端的公钥出去与结果
                 if (JSON.parseObject(result).get("status").toString().equals("200")){
