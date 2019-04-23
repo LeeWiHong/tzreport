@@ -28,8 +28,7 @@ public class CategoryController {
     @RequestMapping("/Allcategory")
     public JsonDTO getAllCategory(){
         JsonDTO jsonDTO = new JsonDTO();
-        List<TbCategory> list = new ArrayList<>();
-        list = categoryServiceInterface.selectAll();
+        List<TbCategory> list = categoryServiceInterface.selectAll();
         if (list.size() > 0){
             jsonDTO.setJsonDTO(true, ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgcode(),ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgdesc(),list);
         }

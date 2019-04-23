@@ -35,6 +35,7 @@ public enum  ExceptionEnum {
     SYSTEN_NO_ALGORITHM(22002,"未找到此类算法",HttpStatus.BAD_REQUEST),
     SYSTEN_ALGORITHM_KEY_INVALID(22003,"无效的算法key",HttpStatus.BAD_REQUEST),
     SYSTEN_ALGORITHM_UNKNOWN_ERROR(22004,"未知的算法错误",HttpStatus.BAD_REQUEST),
+    SYSTEN_FILE_UPLOAD_ERROR(22005,"文件流错误",HttpStatus.BAD_REQUEST),
 
     //    用户登录有关的一些自定义代码
     LOGIN_USER_SUCCESS(10000,"登录成功",HttpStatus.OK),
