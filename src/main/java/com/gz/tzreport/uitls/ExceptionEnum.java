@@ -16,6 +16,9 @@ public enum  ExceptionEnum {
     UPDATE_DATA_SUCCESS(20003,"更新数据成功",HttpStatus.OK),
     DELETE_DATA_SUCCESS(20004,"删除数据成功",HttpStatus.OK),
     QUERARY_DATA_FAILURE(20010,"查询失败",HttpStatus.BAD_REQUEST),
+    INSERT_DATA_FAILURE(20020,"插入失败",HttpStatus.BAD_REQUEST),
+    UPDATE_DATA_FAILURE(20021,"更新失败",HttpStatus.BAD_REQUEST),
+    ADD_DATA_FAILURE(20022,"操作失败",HttpStatus.BAD_REQUEST),
 
 //    MOB短信验证的一些验证码
     MOB_SUCCESS(21000,"验证成功",HttpStatus.OK),
