@@ -49,7 +49,7 @@ public class CategoryController {
     * @return:
     **/
 
-    @RequestMapping("/Allcategory")
+    @RequestMapping("/allcategory")
     public JsonDTO getAllCategory(){
         JsonDTO jsonDTO = new JsonDTO();
         List<TbCategory> list = categoryServiceInterface.selectAll();
