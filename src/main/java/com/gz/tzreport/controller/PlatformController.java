@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/platform")
+@RequestMapping("/api")
 public class PlatformController {
 
     @Autowired

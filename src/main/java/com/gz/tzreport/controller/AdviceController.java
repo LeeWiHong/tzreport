@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 @RestController
 
-@RequestMapping("/advice")
+@RequestMapping("/api")
 public class AdviceController {
 
     @Autowired

@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/category")
+@RequestMapping("/api")
 public class CategoryController {
 
     @Value("${FTP.ADDRESS}")

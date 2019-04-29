@@ -34,7 +34,7 @@ import java.util.HashMap;
 
 @RestController
 
-@RequestMapping("/user")
+@RequestMapping("/api")
 public class UsersController {
 
     @Autowired
