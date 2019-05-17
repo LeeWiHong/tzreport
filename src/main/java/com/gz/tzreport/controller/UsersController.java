@@ -239,11 +239,12 @@ public class UsersController {
                             if (usersServiceInterface.insert(tbUsers) > 0) {
 //                                返回一些个人信息回去
                                 TbUsersPersonInfo personInfo = new TbUsersPersonInfo();
-                                personInfo.setUserId(tbUsers.getUserId());
-                                personInfo.setUserName(tbUsers.getUserName());
-                                personInfo.setHeadImage(tbUsers.getHeadImage());
-                                personInfo.setUserTelephone(tbUsers.getUserTelephone());
-                                personInfo.setUserToken(tbUsers.getUserToken());
+                                TbUsers tbInfoUser = usersServiceInterface.selectByPrimaryKey(tbUsers.getUserId());
+                                personInfo.setUserId(tbInfoUser.getUserId());
+                                personInfo.setUserName(tbInfoUser.getUserName());
+                                personInfo.setHeadImage(tbInfoUser.getHeadImage());
+                                personInfo.setUserTelephone(tbInfoUser.getUserTelephone());
+                                personInfo.setUserToken(tbInfoUser.getUserToken());
                                 jsonDTO.setJsonDTO(true, ExceptionEnum.REGISTER_USER_SUCCESS.getMsgcode(), ExceptionEnum.REGISTER_USER_SUCCESS.getMsgdesc(), personInfo);
                             }
                     }
@@ -288,7 +289,7 @@ public class UsersController {
                 String params = "appkey="+"148b4c395d8c0"+"&"+"phone="+telephone+"&zone=86&&code="+code;
                 String result = requestData(address,params);
 //           验证返回的结果是不是正确的,如果是正确的返回前端的公钥出去与结果
-                if (!JSON.parseObject(result).get("status").toString().equals("200")){
+                if (JSON.parseObject(result).get("status").toString().equals("200")){
 //               获取公钥
                     String publickKeyStr = null;
                     try {
@@ -304,8 +305,6 @@ public class UsersController {
                     HashMap data = new HashMap();
                     data.put("publickey",publickKeyStr);
                     jsonDTO.setJsonDTO(true,ExceptionEnum.MOB_SUCCESS.getMsgcode(),ExceptionEnum.MOB_SUCCESS.getMsgdesc(),data);
-
-
                 }
                 else {
 //               返回自定义的一些异常结果
