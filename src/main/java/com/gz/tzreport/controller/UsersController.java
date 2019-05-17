@@ -12,6 +12,7 @@ import com.gz.tzreport.service.TbrolesServiceInterface;
 import com.gz.tzreport.service.TokenService;
 import com.gz.tzreport.service.UsersServiceInterface;
 import com.gz.tzreport.uitls.*;
+import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -50,6 +51,13 @@ public class UsersController {
     @RequestMapping("/p1")
     public String test(){
         return "leewihong";
+    }
+
+    @RequestMapping("/p2")
+    public JsonDTO test2(){
+        JsonDTO jsonDTO = new JsonDTO();
+        jsonDTO.setJsonDTO(true,ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgcode(),ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgdesc(),new ArrayList<>());
+        return jsonDTO;
     }
 
     /**
@@ -189,20 +197,35 @@ public class UsersController {
         // 1.判断用户名是否合规
         if (ValidatorFormatCheckTools.isUsername(username)){
             if (ValidatorFormatCheckTools.isPhoneLegal(telephone)){
-                if (password.equals(repeatpassword)){
+//                需要解密两个密码才能进行比较
+
+                String DescryPassword = null;
+                String DescryREPassword = null;
+                try {
+
+                    byte[] passwordbyteArray = Base64.getDecoder().decode(password.getBytes());
+                    byte[] RepasswordbyteArray = Base64.getDecoder().decode(repeatpassword.getBytes());
+
+                    PrivateKey privateKey = WHEncryptTools.getPemPrivateKey("rsa_private_key.pem", "RSA");
+                    DescryPassword = WHEncryptTools.RSADecrypt(Hex.encodeHexString(passwordbyteArray), privateKey);
+                    DescryREPassword = WHEncryptTools.RSADecrypt(Hex.encodeHexString(RepasswordbyteArray), privateKey);
+                }
+                catch (Exception e){
+                    jsonDTO.setJsonDTO(false,ExceptionEnum.SYSTEN_ALGORITHM_KEY_INVALID.getMsgcode(),ExceptionEnum.SYSTEN_ALGORITHM_KEY_INVALID.getMsgdesc(),new ArrayList<>());
+                }
+                if (DescryPassword.equals(DescryREPassword)){
 
                     if (usersServiceInterface.selectByTelephone(telephone).size() > 0){
                         jsonDTO.setJsonDTO(false,ExceptionEnum.LOGIN_TELEPHONE_HASEXISTED.getMsgcode(),ExceptionEnum.LOGIN_TELEPHONE_HASEXISTED.getMsgdesc(),new ArrayList<>());
                     }
                     else {
-                        PrivateKey privateKey = null;
+
                         String md5password = null;
                         try {
-                            privateKey = WHEncryptTools.getPemPrivateKey("rsa_private_key.pem", "RSA");
-                            String descrypassword = WHEncryptTools.RSADecrypt(password, privateKey);
-                            md5password = WHEncryptTools.MD5Encode(descrypassword, "utf-8");
-                        }catch (Exception e){
-                            jsonDTO.setJsonDTO(false,ExceptionEnum.SYSTEN_ALGORITHM_KEY_INVALID.getMsgcode(),ExceptionEnum.SYSTEN_ALGORITHM_KEY_INVALID.getMsgdesc(),new ArrayList<>());
+                            md5password = WHEncryptTools.MD5Encode(DescryPassword, "utf-8");
+                        }catch (Exception e)
+                        {
+                            jsonDTO.setJsonDTO(false,ExceptionEnum.SYSTEN_ALGORITHM_UNKNOWN_ERROR.getMsgcode(),ExceptionEnum.SYSTEN_ALGORITHM_UNKNOWN_ERROR.getMsgdesc(),new ArrayList<>());
                         }
                             TbRoles tbRoles = tbrolesServiceInterface.selectByRoleLeve("0");
                             TbUsers tbUsers = new TbUsers();
@@ -262,10 +285,10 @@ public class UsersController {
                 //            拿到手机号跟提交的验证码去SMSSDK服务器请求验证结果是否正确
                 String address = "https://webapi.sms.mob.com/sms/verify";
 //            appkey写成固定的同时国内的区号都固定为86,上传git的时候key去掉
-                String params = "appkey="+""+"&"+"phone="+telephone+"&zone=86&&code="+code;
+                String params = "appkey="+"148b4c395d8c0"+"&"+"phone="+telephone+"&zone=86&&code="+code;
                 String result = requestData(address,params);
 //           验证返回的结果是不是正确的,如果是正确的返回前端的公钥出去与结果
-                if (JSON.parseObject(result).get("status").toString().equals("200")){
+                if (!JSON.parseObject(result).get("status").toString().equals("200")){
 //               获取公钥
                     String publickKeyStr = null;
                     try {
@@ -278,7 +301,9 @@ public class UsersController {
                     } catch (InvalidKeySpecException e) {
                         e.printStackTrace();
                     }
-                    jsonDTO.setJsonDTO(true,ExceptionEnum.MOB_SUCCESS.getMsgcode(),ExceptionEnum.MOB_SUCCESS.getMsgdesc(),new ArrayList<String>().add(publickKeyStr));
+                    HashMap data = new HashMap();
+                    data.put("publickey",publickKeyStr);
+                    jsonDTO.setJsonDTO(true,ExceptionEnum.MOB_SUCCESS.getMsgcode(),ExceptionEnum.MOB_SUCCESS.getMsgdesc(),data);
 
 
                 }

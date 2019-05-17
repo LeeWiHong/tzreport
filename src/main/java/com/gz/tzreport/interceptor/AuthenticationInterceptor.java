@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
+import java.util.List;
 
 public class AuthenticationInterceptor implements HandlerInterceptor {
     @Autowired
@@ -49,18 +50,18 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                     throw new CustomException(ExceptionEnum.LOGIN_TOKEN_NULL.getHttpStatus(),ExceptionEnum.LOGIN_TOKEN_NULL.getMsgcode(),ExceptionEnum.LOGIN_TOKEN_NULL.getMsgdesc());
                 }
                 // 获取 token 中的 user id
-                String userId;
+                String userphone;
                 try {
-                    userId = JWT.decode(token).getAudience().get(0);
+                    userphone = JWT.decode(token).getAudience().get(0);
                 } catch (JWTDecodeException j) {
                     throw new CustomException(ExceptionEnum.LOGIN_TOKEN_UNDECODE.getHttpStatus(),ExceptionEnum.LOGIN_TOKEN_UNDECODE.getMsgcode(),ExceptionEnum.LOGIN_TOKEN_UNDECODE.getMsgdesc());
                 }
-                TbUsers tbUsers = usersServiceInterface.selectByPrimaryKey(Integer.valueOf(userId));
-                if (tbUsers == null) {
+                List<TbUsers> tbUsersList = usersServiceInterface.selectByTelephone(userphone);
+                if (tbUsersList == null) {
                     throw new CustomException(ExceptionEnum.LOGIN_USER_NOTEXISTED.getHttpStatus(),ExceptionEnum.LOGIN_USER_NOTEXISTED.getMsgcode(),ExceptionEnum.LOGIN_USER_NOTEXISTED.getMsgdesc());
                 }
                 // 验证 token
-                JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(tbUsers.getUserPassword())).build();
+                JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(tbUsersList.get(0).getUserPassword())).build();
                 try {
                     jwtVerifier.verify(token);
                 } catch (JWTVerificationException e) {
