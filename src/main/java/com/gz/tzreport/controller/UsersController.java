@@ -61,6 +61,60 @@ public class UsersController {
     }
 
     /**
+    * @description: 修改密码接口
+    *
+    * @return: jsondto
+    **/
+
+    @RequestMapping("/updatepassword")
+    public JsonDTO ChangePassword(@RequestParam(value = "telephone") String telephone,@RequestParam(value = "code") String code,@RequestParam(value = "newpassword") String newpassword){
+        JsonDTO jsonDTO = new JsonDTO();
+//        1.查找电话号码用户有没有
+        if (usersServiceInterface.selectByTelephone(telephone).size() > 0){
+//            2.根据电话号码跟code去验证是否正确
+            String result = requestData(telephone,code);
+//           验证返回的结果是不是正确的,如果是正确的返回前端的公钥出去与结果
+            if (JSON.parseObject(result).get("status").toString().equals("200"))
+            {
+//               3.解析新密码
+                String DescryNewPassword = null;
+                try {
+
+                    byte[] NewpasswordbyteArray = Base64.getDecoder().decode(newpassword.getBytes());
+                    PrivateKey privateKey = WHEncryptTools.getPemPrivateKey("rsa_private_key.pem", "RSA");
+                    DescryNewPassword = WHEncryptTools.RSADecrypt(Hex.encodeHexString(NewpasswordbyteArray), privateKey);
+                    TbUsers tbUsers = usersServiceInterface.selectByTelephone(telephone).get(0);
+                    String MD5NewPass =WHEncryptTools.MD5Encode(DescryNewPassword, "utf-8");
+                    tbUsers.setUserPassword(MD5NewPass);
+                    String token = tokenService.getToken(tbUsers);
+                    tbUsers.setUserToken(token);
+//                    4.更新用户密码,确切的说这个地方应该也把token给更新一下到前端去的
+                    if (usersServiceInterface.updateTokenByPrimaryKey(tbUsers) > 0){
+                        HashMap hashMap = new HashMap();
+                        hashMap.put("token",token);
+                        jsonDTO.setJsonDTO(false,ExceptionEnum.UPDATE_DATA_SUCCESS.getMsgcode(),ExceptionEnum.UPDATE_DATA_SUCCESS.getMsgdesc(),hashMap);
+                    }
+                    else {
+                        jsonDTO.setJsonDTO(false,ExceptionEnum.UPDATE_DATA_FAILURE.getMsgcode(),ExceptionEnum.UPDATE_DATA_FAILURE.getMsgdesc(),new ArrayList<>());
+                    }
+                }
+                catch (Exception e){
+                    jsonDTO.setJsonDTO(false,ExceptionEnum.SYSTEN_ALGORITHM_KEY_INVALID.getMsgcode(),ExceptionEnum.SYSTEN_ALGORITHM_KEY_INVALID.getMsgdesc(),new ArrayList<>());
+                }
+            }
+            else
+                {
+                    jsonDTO.setJsonDTO(false,ExceptionEnum.LOGIN_VERIFICODE_ERROR.getMsgcode(),ExceptionEnum.LOGIN_VERIFICODE_ERROR.getMsgdesc(),new ArrayList<>());
+                }
+        }
+        else {
+            jsonDTO.setJsonDTO(false,ExceptionEnum.LOGIN_USER_NOTEXISTED.getMsgcode(),ExceptionEnum.LOGIN_USER_NOTEXISTED.getMsgdesc(),new ArrayList<>());
+        }
+        return jsonDTO;
+    }
+
+
+    /**
     * @description: 退出
     *
     * @return:
@@ -283,13 +337,11 @@ public class UsersController {
                 return jsonDTO;
             }
             else {
-                //            拿到手机号跟提交的验证码去SMSSDK服务器请求验证结果是否正确
-                String address = "https://webapi.sms.mob.com/sms/verify";
-//            appkey写成固定的同时国内的区号都固定为86,上传git的时候key去掉
-                String params = "appkey="+"148b4c395d8c0"+"&"+"phone="+telephone+"&zone=86&&code="+code;
-                String result = requestData(address,params);
+
+                String result = requestData(telephone,code);
 //           验证返回的结果是不是正确的,如果是正确的返回前端的公钥出去与结果
-                if (JSON.parseObject(result).get("status").toString().equals("200")){
+                if (JSON.parseObject(result).get("status").toString().equals("200"))
+                {
 //               获取公钥
                     String publickKeyStr = null;
                     try {
@@ -366,8 +418,13 @@ public class UsersController {
     }
 
     //    去SMSSDK服务器验证验证码是否正确
-    public  static String requestData(String address ,String params){
 
+    public  static String requestData(String telephone ,String code){
+
+        //            拿到手机号跟提交的验证码去SMSSDK服务器请求验证结果是否正确
+        String address = "https://webapi.sms.mob.com/sms/verify";
+//            appkey写成固定的同时国内的区号都固定为86,上传git的时候key去掉
+        String params = "appkey="+"148b4c395d8c0"+"&"+"phone="+telephone+"&zone=86&&code="+code;
         HttpURLConnection conn = null;
         try {
             // Create a trust manager that does not validate certificate chains
