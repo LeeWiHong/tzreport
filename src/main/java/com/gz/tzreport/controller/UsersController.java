@@ -88,11 +88,11 @@ public class UsersController {
                     tbUsers.setUserPassword(MD5NewPass);
                     String token = tokenService.getToken(tbUsers);
                     tbUsers.setUserToken(token);
-//                    4.更新用户密码,确切的说这个地方应该也把token给更新一下到前端去的
+//                    4.更新用户密码,确切的说这个地方应该也把token与publickey给更新一下到前端去的
                     if (usersServiceInterface.updateTokenByPrimaryKey(tbUsers) > 0){
                         HashMap hashMap = new HashMap();
                         hashMap.put("token",token);
-                        jsonDTO.setJsonDTO(false,ExceptionEnum.UPDATE_DATA_SUCCESS.getMsgcode(),ExceptionEnum.UPDATE_DATA_SUCCESS.getMsgdesc(),hashMap);
+                        jsonDTO.setJsonDTO(true,ExceptionEnum.UPDATE_DATA_SUCCESS.getMsgcode(),ExceptionEnum.UPDATE_DATA_SUCCESS.getMsgdesc(),hashMap);
                     }
                     else {
                         jsonDTO.setJsonDTO(false,ExceptionEnum.UPDATE_DATA_FAILURE.getMsgcode(),ExceptionEnum.UPDATE_DATA_FAILURE.getMsgdesc(),new ArrayList<>());
@@ -164,8 +164,10 @@ public class UsersController {
                 String MD5Password = null;
 //                2.解密传过来的密码
                 try {
+                    byte[] passwordbyteArray = Base64.getDecoder().decode(password.getBytes());
+
                     PrivateKey privateKey = WHEncryptTools.getPemPrivateKey("rsa_private_key.pem","RSA");
-                    String decrypassword = WHEncryptTools.RSADecrypt(password,privateKey);
+                    String decrypassword = WHEncryptTools.RSADecrypt(Hex.encodeHexString(passwordbyteArray),privateKey);
                     MD5Password = WHEncryptTools.MD5Encode(decrypassword,"utf-8");
                 }
                 catch (IOException e){
