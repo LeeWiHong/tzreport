@@ -10,6 +10,7 @@ import com.gz.tzreport.pojo.TbUsers;
 import com.gz.tzreport.service.AdviceServiceInterface;
 import com.gz.tzreport.uitls.ExceptionEnum;
 import com.gz.tzreport.uitls.JsonDTO;
+import com.gz.tzreport.uitls.ValidatorFormatCheckTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,31 +26,33 @@ public class AdviceController {
     @Autowired
     private AdviceServiceInterface adviceServiceInterface;
 
-    @Autowired
-    private TbUsersMapper tbUsersMapper;
-
-    @UserLoginToken
     @RequestMapping("/addadvice")
-    public JsonDTO AddAdvice(@RequestParam(value = "userid") int userid, @RequestParam(value = "title") String title, @RequestParam(value = "content") String content, @RequestParam(value = "description") String description){
+    public JsonDTO AddAdvice(@RequestParam(value = "title") String title, @RequestParam(value = "content") String content, @RequestParam(value = "telephone") String telephone){
         JsonDTO jsonDTO = new JsonDTO();
-//        1.查询用户id是否存在数据
-        TbUsers tbUsers = tbUsersMapper.selectByPrimaryKey(userid);
-        if (tbUsers !=  null){
-            TbAdvice tbAdvice = new TbAdvice();
-            tbAdvice.setAdviceBody(content);
-            tbAdvice.setAdviceDescript(description);
-            tbAdvice.setAdviceTitle(title);
-            tbAdvice.setUserId(userid);
-            if (adviceServiceInterface.insert(tbAdvice) > 0){
-                jsonDTO.setJsonDTO(true, ExceptionEnum.ADD_DATA_SUCCESS.getMsgcode(),ExceptionEnum.ADD_DATA_SUCCESS.getMsgdesc(),new ArrayList<>());
+        if (ValidatorFormatCheckTools.isPhoneLegal(telephone)){
+//           建议内容不能少于10个字符
+            if (content.length() > 10)
+            {
+                TbAdvice tbAdvice = new TbAdvice();
+                tbAdvice.setAdviceTitle(title);
+                tbAdvice.setAdviceBody(content);
+                tbAdvice.setAdviceTelephone(telephone);
+                if (adviceServiceInterface.insert(tbAdvice) > 0){
+                    jsonDTO.setJsonDTO(true,ExceptionEnum.ADD_DATA_SUCCESS.getMsgcode(),ExceptionEnum.ADD_DATA_SUCCESS.getMsgdesc(),new ArrayList<>());
+                }
+                else {
+                    jsonDTO.setJsonDTO(false,ExceptionEnum.ADD_DATA_FAILURE.getMsgcode(),ExceptionEnum.ADD_DATA_FAILURE.getMsgdesc(),new ArrayList<>());
+                }
             }
             else {
-                jsonDTO.setJsonDTO(false, ExceptionEnum.ADD_DATA_FAILURE.getMsgcode(), ExceptionEnum.ADD_DATA_FAILURE.getMsgdesc(), new ArrayList<>());
+                jsonDTO.setJsonDTO(false,ExceptionEnum.ADD_DATA_FAILURE.getMsgcode(),ExceptionEnum.ADD_DATA_FAILURE.getMsgdesc(),new ArrayList<>());
             }
+
         }
         else {
-            jsonDTO.setJsonDTO(false,ExceptionEnum.LOGIN_USER_NOTEXISTED.getMsgcode(),ExceptionEnum.LOGIN_USER_NOTEXISTED.getMsgdesc(),new ArrayList<>());
+            jsonDTO.setJsonDTO(false,ExceptionEnum.MOB_TELEPHONE_FORMAT_ERROR.getMsgcode(),ExceptionEnum.MOB_TELEPHONE_FORMAT_ERROR.getMsgdesc(),new ArrayList<>());
         }
+
         return jsonDTO;
     }
 

@@ -6,7 +6,6 @@ import com.gz.tzreport.pojo.TbAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 public class AdviceServiceImp implements AdviceServiceInterface {
