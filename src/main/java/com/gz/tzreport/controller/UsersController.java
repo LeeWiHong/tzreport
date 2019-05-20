@@ -89,7 +89,7 @@ public class UsersController {
                     String token = tokenService.getToken(tbUsers);
                     tbUsers.setUserToken(token);
 //                    4.更新用户密码,确切的说这个地方应该也把token与publickey给更新一下到前端去的
-                    if (usersServiceInterface.updateTokenByPrimaryKey(tbUsers) > 0){
+                    if (usersServiceInterface.updateByPrimaryKey(tbUsers) > 0){
                         HashMap hashMap = new HashMap();
                         hashMap.put("token",token);
                         jsonDTO.setJsonDTO(true,ExceptionEnum.UPDATE_DATA_SUCCESS.getMsgcode(),ExceptionEnum.UPDATE_DATA_SUCCESS.getMsgdesc(),hashMap);
