@@ -62,7 +62,7 @@ public class CategoryController {
         return jsonDTO;
     }
 
-    @RequestMapping("/incategory")
+    @RequestMapping("/insertcateitem")
     public JsonDTO InsertCategory(@RequestParam("/name") String CategoryName, @RequestParam("image") MultipartFile uploadFile, @RequestParam("/description") String Description){
         JsonDTO jsonDTO = new JsonDTO();
         String oldName = uploadFile.getOriginalFilename();
