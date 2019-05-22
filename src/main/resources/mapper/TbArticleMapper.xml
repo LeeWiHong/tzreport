@@ -75,4 +75,10 @@
     article_descript, article_body, article_image, create_time, update_time
     from tb_article
   </select>
+
+  <select id="selectIndexArticle" resultMap="BaseResultMap">
+    select article_id, article_title, article_link, article_platform, article_category,
+    article_descript, article_body, article_image, create_time, update_time
+    from tb_article
+  </select>
 </mapper>

@@ -19,4 +19,6 @@ public interface ArticleServiceInterface {
     List<TbArticle> selectAll();
 
     int updateByPrimaryKey(TbArticle record);
+
+    List<TbArticle> selectIndexArticle();
 }

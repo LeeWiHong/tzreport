@@ -36,4 +36,9 @@ public class ArticleServiceImp implements ArticleServiceInterface {
     public int updateByPrimaryKey(TbArticle record) {
         return tbArticleMapper.updateByPrimaryKey(record);
     }
+
+    @Override
+    public List<TbArticle> selectIndexArticle() {
+        return tbArticleMapper.selectIndexArticle();
+    }
 }

@@ -75,12 +75,23 @@ public class ArticleController {
         return jsonDTO;
     }
     @RequestMapping("/allarticle")
-    public JsonDTO AllArticle(int pageno,int pagesize){
+    public JsonDTO AllArticle(@RequestParam(value = "pageno") int pageno,@RequestParam(value = "pagesize") int pagesize){
         JsonDTO jsonDTO = new JsonDTO();
         PageHelper.startPage(pageno,pagesize);
         PageInfo<TbArticle> pageInfo = new PageInfo<>(articleService.selectAll());
         jsonDTO.setJsonDTO(true,ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgcode(),ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgdesc(),pageInfo);
         return jsonDTO;
     }
+
+    @RequestMapping("/indexarticle")
+    public JsonDTO indexArticle(@RequestParam(value = "pageno") int pageno,@RequestParam(value = "pagesize") int pagesize){
+        JsonDTO jsonDTO = new JsonDTO();
+        PageHelper.startPage(pageno,pagesize);
+        PageInfo<TbArticle> pageInfo = new PageInfo<>(articleService.selectIndexArticle());
+
+        jsonDTO.setJsonDTO(true,ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgcode(),ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgdesc(),pageInfo);
+        return jsonDTO;
+    }
+
 
 }

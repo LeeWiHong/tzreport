@@ -43,4 +43,7 @@ public interface TbArticleMapper {
      * @mbg.generated
      */
     int updateByPrimaryKey(TbArticle record);
+
+    List<TbArticle> selectIndexArticle();
+
 }
