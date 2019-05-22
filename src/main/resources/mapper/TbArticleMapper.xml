@@ -9,13 +9,14 @@
     <id column="article_id" jdbcType="INTEGER" property="articleId" />
     <result column="article_title" jdbcType="VARCHAR" property="articleTitle" />
     <result column="article_link" jdbcType="VARCHAR" property="articleLink" />
-    <result column="article_platform" jdbcType="INTEGER" property="articlePlatform" />
-    <result column="article_category" jdbcType="INTEGER" property="articleCategory" />
+
     <result column="article_descript" jdbcType="VARCHAR" property="articleDescript" />
     <result column="article_body" jdbcType="VARCHAR" property="articleBody" />
     <result column="article_image" jdbcType="VARCHAR" property="articleImage" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <association property="articlePlatform" column="article_platform" javaType="com.gz.tzreport.pojo.TbPlatform"/>
+    <association property="articleCategory" column="article_category" javaType="com.gz.tzreport.pojo.TbCategory"/>
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     <!--
@@ -77,8 +78,8 @@
   </select>
 
   <select id="selectIndexArticle" resultMap="BaseResultMap">
-    select article_id, article_title, article_link, article_platform, article_category,
-    article_descript, article_body, article_image, create_time, update_time
-    from tb_article
+    select ta.article_id, ta.article_title, ta.article_link,ta.article_descript, ta.article_body, ta.article_image, tp.platform_name
+    from tb_article ta,tb_platform tp
+    where ta.article_platform = tp.platform_id
   </select>
 </mapper>
