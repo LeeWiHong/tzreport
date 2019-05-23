@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.gz.tzreport.dao.TbArticleMapper">
+
   <resultMap id="BaseResultMap" type="com.gz.tzreport.pojo.TbArticle">
     <!--
       WARNING - @mbg.generated
@@ -9,28 +10,30 @@
     <id column="article_id" jdbcType="INTEGER" property="articleId" />
     <result column="article_title" jdbcType="VARCHAR" property="articleTitle" />
     <result column="article_link" jdbcType="VARCHAR" property="articleLink" />
-    <result column="article_platform" jdbcType="INTEGER" property="articlePlatform"/>
     <result column="article_descript" jdbcType="VARCHAR" property="articleDescript" />
     <result column="article_body" jdbcType="VARCHAR" property="articleBody" />
     <result column="article_image" jdbcType="VARCHAR" property="articleImage" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
 
-    <association property="articleCategory" javaType="com.gz.tzreport.pojo.TbCategory">
+    <association property="articleCategory" javaType="com.gz.tzreport.pojo.TbCategory" typeHandler="com.gz.tzreport.handlers.CategoryTypeHandler">
+
       <result property="categoryName" column="category_name"/>
+
+      <result property="categoryImage" column="category_image"/>
+
     </association>
 
     <association property="articlePlatform" javaType="com.gz.tzreport.pojo.TbPlatform">
+
       <result property="platformName" column="platform_name"/>
     </association>
 
   </resultMap>
 
   <select id="selectIndexArticle" resultMap="BaseResultMap">
-    select ta.article_id, ta.article_title, ta.article_link,ta.article_descript, ta.article_body, ta.article_image, tc.category_name, tp.platform_name
---     from tb_article ta,tb_category tc
+    select ta.article_id, ta.article_title, ta.article_link,ta.article_descript, ta.article_body, ta.article_image, tc.category_name,tc.category_image, tp.platform_name
     from tb_article ta,tb_category tc,tb_platform tp
---     where ta.article_category = tc.category_id
     where ta.article_platform = tp.platform_id
     and ta.article_category = tc.category_id
   </select>

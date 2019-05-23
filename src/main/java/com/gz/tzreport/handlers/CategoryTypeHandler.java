@@ -19,16 +19,21 @@ public class CategoryTypeHandler extends BaseTypeHandler<TbCategory> {
 
     @Override
     public TbCategory getNullableResult(ResultSet rs, String columnName) throws SQLException {
+        System.out.println("aaaaa---"+rs.getString(columnName));
         return new TbCategory(rs.getString(columnName));
     }
 
     @Override
     public TbCategory getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
+        System.out.println("bbbbb---"+rs.getString(columnIndex));
+
         return new TbCategory(rs.getString(columnIndex));
     }
 
     @Override
     public TbCategory getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
+        System.out.println("ccccc---"+cs);
+
         return new TbCategory(cs.getString(columnIndex));
     }
 }
