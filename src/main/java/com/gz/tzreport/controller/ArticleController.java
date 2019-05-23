@@ -26,11 +26,11 @@ public class ArticleController {
         JsonDTO jsonDTO = new JsonDTO();
         TbArticle tbArticle = new TbArticle();
         tbArticle.setArticleBody(body);
-        tbArticle.setArticleCategory(category);
+//        tbArticle.setArticleCategory(category);
         tbArticle.setArticleDescript(description);
         tbArticle.setArticleImage(image);
         tbArticle.setArticleLink(link);
-        tbArticle.setArticlePlatform(platform);
+//        tbArticle.setArticlePlatform(platform);
         tbArticle.setArticleTitle(title);
         if (articleService.insert(tbArticle) > 0){
             jsonDTO.setJsonDTO(true, ExceptionEnum.ADD_DATA_SUCCESS.getMsgcode(),ExceptionEnum.ADD_DATA_SUCCESS.getMsgdesc(),new ArrayList<>());
@@ -59,11 +59,11 @@ public class ArticleController {
         if (articleService.selectByPrimaryKey(articleid) != null){
             TbArticle tbArticle = new TbArticle();
             tbArticle.setArticleTitle(title);
-            tbArticle.setArticlePlatform(platform);
+//            tbArticle.setArticlePlatform(platform);
             tbArticle.setArticleLink(link);
             tbArticle.setArticleImage(image);
             tbArticle.setArticleDescript(description);
-            tbArticle.setArticleCategory(category);
+//            tbArticle.setArticleCategory(category);
             tbArticle.setArticleBody(body);
             if (articleService.updateByPrimaryKey(tbArticle) > 0){
                 jsonDTO.setJsonDTO(true,ExceptionEnum.UPDATE_DATA_SUCCESS.getMsgcode(),ExceptionEnum.UPDATE_DATA_SUCCESS.getMsgdesc(),new ArrayList<>());
