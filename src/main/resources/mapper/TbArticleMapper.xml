@@ -16,18 +16,18 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
 
-    <association property="articleCategory" javaType="com.gz.tzreport.pojo.TbCategory" typeHandler="com.gz.tzreport.handlers.CategoryTypeHandler">
+    <!--<association property="articleCategory" javaType="com.gz.tzreport.pojo.TbCategory" typeHandler="com.gz.tzreport.handlers.CategoryTypeHandler">-->
 
-      <result property="categoryName" column="category_name"/>
+      <!--<result property="categoryName" column="category_name"/>-->
 
-      <result property="categoryImage" column="category_image"/>
+      <!--<result property="categoryImage" column="category_image"/>-->
 
-    </association>
+    <!--</association>-->
 
-    <association property="articlePlatform" javaType="com.gz.tzreport.pojo.TbPlatform">
+    <!--<association property="articlePlatform" javaType="com.gz.tzreport.pojo.TbPlatform">-->
 
-      <result property="platformName" column="platform_name"/>
-    </association>
+      <!--<result property="platformName" column="platform_name"/>-->
+    <!--</association>-->
 
   </resultMap>
 

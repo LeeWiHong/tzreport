@@ -8,8 +8,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@MappedJdbcTypes(JdbcType.INTEGER)
-@MappedTypes(TbCategory.class)
+//@MappedJdbcTypes(JdbcType.INTEGER)
+//@MappedTypes(TbCategory.class)
 public class CategoryTypeHandler extends BaseTypeHandler<TbCategory> {
 
     @Override

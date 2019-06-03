@@ -37,7 +37,7 @@ public class TbArticle {
      *
      * @mbg.generated
      */
-    private TbPlatform articlePlatform;
+    private Integer articlePlatform;
 
     /**
      *
@@ -46,7 +46,7 @@ public class TbArticle {
      *
      * @mbg.generated
      */
-    private TbCategory articleCategory;
+    private Integer articleCategory;
 
     /**
      *
@@ -173,7 +173,7 @@ public class TbArticle {
      *
      * @mbg.generated
      */
-    public TbPlatform getArticlePlatform() {
+    public Integer getArticlePlatform() {
         return articlePlatform;
     }
 
@@ -185,7 +185,7 @@ public class TbArticle {
      *
      * @mbg.generated
      */
-    public void setArticlePlatform(TbPlatform articlePlatform) {
+    public void setArticlePlatform(Integer articlePlatform) {
         this.articlePlatform = articlePlatform;
     }
 
@@ -197,7 +197,7 @@ public class TbArticle {
      *
      * @mbg.generated
      */
-    public TbCategory getArticleCategory() {
+    public Integer getArticleCategory() {
         return articleCategory;
     }
 
@@ -209,7 +209,7 @@ public class TbArticle {
      *
      * @mbg.generated
      */
-    public void setArticleCategory(TbCategory articleCategory) {
+    public void setArticleCategory(Integer articleCategory) {
         this.articleCategory = articleCategory;
     }
 

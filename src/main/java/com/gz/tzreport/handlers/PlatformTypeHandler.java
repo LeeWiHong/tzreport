@@ -11,8 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@MappedJdbcTypes(JdbcType.INTEGER)
-@MappedTypes(TbPlatform.class)
+//@MappedJdbcTypes(JdbcType.INTEGER)
+//@MappedTypes(TbPlatform.class)
 public class PlatformTypeHandler extends BaseTypeHandler<TbPlatform> {
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, TbPlatform parameter, JdbcType jdbcType) throws SQLException {
