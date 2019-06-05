@@ -4,6 +4,8 @@ package com.gz.tzreport.controller;
 import com.alibaba.fastjson.JSON;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.gz.tzreport.annotation.UserLoginToken;
 import com.gz.tzreport.dao.TbUsersPersonInfo;
 import com.gz.tzreport.pojo.TbRoles;
@@ -58,6 +60,11 @@ public class UsersController {
         JsonDTO jsonDTO = new JsonDTO();
         jsonDTO.setJsonDTO(true,ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgcode(),ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgdesc(),new ArrayList<>());
         return jsonDTO;
+    }
+
+    @RequestMapping("/")
+    public String test3(){
+        return "abcdefghi";
     }
 
     /**
@@ -504,4 +511,13 @@ public class UsersController {
         return buffer.toString();
     }
 
+
+    @RequestMapping("/alluser")
+    public JsonDTO getAllUser(@RequestParam(value = "pageno") int pageno,@RequestParam(value = "pagesize") int pagesize){
+        JsonDTO jsonDTO = new JsonDTO();
+        PageHelper.startPage(pageno,pagesize);
+        PageInfo<TbUsers> pageInfo = new PageInfo<>(usersServiceInterface.selectAll());
+        jsonDTO.setJsonDTO(true,ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgcode(),ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgdesc(),pageInfo);
+        return jsonDTO;
+    }
 }
