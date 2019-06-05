@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,18 +31,39 @@ public class SumaryController {
     @RequestMapping("/allsummary")
     public JsonDTO getAllSummary(){
         JsonDTO jsonDTO = new JsonDTO();
-        HashMap hashMap = new HashMap();
+
+        ArrayList<HashMap> list = new ArrayList<>();
         Integer usernum = usersServiceInterface.selectAll().size();
+        HashMap userMap = new HashMap();
+        userMap.put("number",usernum);
+        userMap.put("title","用户总数");
+        list.add(userMap);
+
         Integer articlenum = articleServiceInterface.selectAll().size();
+        HashMap articleMap = new HashMap();
+        articleMap.put("number",articlenum);
+        articleMap.put("title","文章总数");
+        list.add(articleMap);
+
         Integer categorynum = categoryServiceInterface.selectAll().size();
+        HashMap categoryMap = new HashMap();
+        categoryMap.put("number",categorynum);
+        categoryMap.put("title","分类总数");
+        list.add(categoryMap);
+
         Integer platformnum = tbplatformServiceInterface.selectAll().size();
+        HashMap platformMap = new HashMap();
+        platformMap.put("number",platformnum);
+        platformMap.put("title","平台总数");
+        list.add(platformMap);
+
         Integer advicenum = adviceServiceInterface.selectAll().size();
-        hashMap.put("usernum",usernum);
-        hashMap.put("articlenum",articlenum);
-        hashMap.put("categorynum",categorynum);
-        hashMap.put("platformnum",platformnum);
-        hashMap.put("advicenum",advicenum);
-        jsonDTO.setJsonDTO(true, ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgcode(),ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgdesc(),hashMap);
+        HashMap adviceMap = new HashMap();
+        adviceMap.put("number",advicenum);
+        adviceMap.put("title","建议总数");
+        list.add(adviceMap);
+
+        jsonDTO.setJsonDTO(true, ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgcode(),ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgdesc(),list);
         return jsonDTO;
     }
 
