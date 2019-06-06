@@ -6,11 +6,15 @@ import com.github.pagehelper.PageInfo;
 import com.gz.tzreport.pojo.TbArticle;
 import com.gz.tzreport.service.ArticleServiceInterface;
 import com.gz.tzreport.uitls.ExceptionEnum;
+import com.gz.tzreport.uitls.IDUtils;
 import com.gz.tzreport.uitls.JsonDTO;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 
@@ -18,17 +22,44 @@ import java.util.ArrayList;
 @RequestMapping("/api")
 public class ArticleController {
 
+    @Value("${FTP.ADDRESS}")
+    private String host;
+
+    @Value("${FTP.PORT}")
+    private int port;
+
+    @Value("${FTP.USERNAME}")
+    private String username;
+
+    @Value("${FTP.PASSWORD}")
+    private String password;
+
+    @Value("${FTP.BASEPATH}")
+    private String basePath;
+
+    @Value("${IMAGE.BASE.URL}")
+    private String baseUrl;
+
     @Autowired
     private ArticleServiceInterface articleService;
 
     @RequestMapping("/addarticle")
-    public JsonDTO AddArticle(@RequestParam(value = "title") String title, @RequestParam(value = "link") String link, @RequestParam(value = "platform") Integer platform, @RequestParam(value = "category") Integer category, @RequestParam(value = "description") String description, @RequestParam(value = "body") String body, @RequestParam(value = "image") String image){
+    public JsonDTO AddArticle(@RequestParam(value = "title") String title, @RequestParam(value = "link") String link, @RequestParam(value = "platform") Integer platform, @RequestParam(value = "category") Integer category, @RequestParam(value = "description") String description, @RequestParam(value = "body") String body, @RequestParam(value = "uploadimage") MultipartFile uploadimage){
         JsonDTO jsonDTO = new JsonDTO();
+
+        String oldName = uploadimage.getOriginalFilename();
+        String newName = IDUtils.genImageName();
+        newName = newName + oldName.substring(oldName.lastIndexOf("."));
+        String filePath = new DateTime().toString("/yyyy/MM/dd");
+
+
+
         TbArticle tbArticle = new TbArticle();
         tbArticle.setArticleBody(body);
 //        tbArticle.setArticleCategory(category);
         tbArticle.setArticleDescript(description);
-        tbArticle.setArticleImage(image);
+//        tbArticle.setArticleImage(image);
+        tbArticle.setArticleImage(baseUrl+filePath+"/"+newName);
         tbArticle.setArticleLink(link);
 //        tbArticle.setArticlePlatform(platform);
         tbArticle.setArticleTitle(title);

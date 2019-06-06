@@ -67,9 +67,5 @@ public class SumaryController {
         return jsonDTO;
     }
 
-    @RequestMapping("/sum")
-    public String test333(){
-        return "lwwwwfd";
-    }
 
 }
