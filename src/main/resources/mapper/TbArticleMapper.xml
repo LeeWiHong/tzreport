@@ -56,14 +56,14 @@
     -->
 
 
---     insert into tb_article (article_id, article_title, article_link,
---       article_platform, article_category, article_descript,
---       article_body, article_image, create_time,
---       update_time)
---     values (#{articleId,jdbcType=INTEGER}, #{articleTitle,jdbcType=VARCHAR}, #{articleLink,jdbcType=VARCHAR},
---       #{articlePlatform,jdbcType=INTEGER}, #{articleCategory,jdbcType=INTEGER}, #{articleDescript,jdbcType=VARCHAR},
---       #{articleBody,jdbcType=VARCHAR}, #{articleImage,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
---       #{updateTime,jdbcType=TIMESTAMP})
+    insert into tb_article (article_id, article_title, article_link,
+      article_platform, article_category, article_descript,
+      article_body, article_image, create_time,
+      update_time)
+    values (#{articleId,jdbcType=INTEGER}, #{articleTitle,jdbcType=VARCHAR}, #{articleLink,jdbcType=VARCHAR},
+      #{articlePlatform,jdbcType=INTEGER}, #{articleCategory,jdbcType=INTEGER}, #{articleDescript,jdbcType=VARCHAR},
+      #{articleBody,jdbcType=VARCHAR}, #{articleImage,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+      #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.gz.tzreport.pojo.TbArticle">
     <!--

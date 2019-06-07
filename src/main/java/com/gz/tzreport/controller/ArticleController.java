@@ -44,22 +44,18 @@ public class ArticleController {
     private ArticleServiceInterface articleService;
 
     @RequestMapping("/addarticle")
-    public JsonDTO AddArticle(@RequestParam(value = "title") String title, @RequestParam(value = "link") String link, @RequestParam(value = "platform") Integer platform, @RequestParam(value = "category") Integer category, @RequestParam(value = "description") String description, @RequestParam(value = "body") String body, @RequestParam(value = "uploadimage") MultipartFile uploadimage){
+    public JsonDTO AddArticle(@RequestParam(value = "title") String title, @RequestParam(value = "link",required = false) String link, @RequestParam(value = "platform",required = false) Integer platform, @RequestParam(value = "category",required = false) Integer category, @RequestParam(value = "description") String description, @RequestParam(value = "bodycontent") String bodycontent, @RequestParam(value = "uploadimage") String uploadimage){
         JsonDTO jsonDTO = new JsonDTO();
 
-        String oldName = uploadimage.getOriginalFilename();
-        String newName = IDUtils.genImageName();
-        newName = newName + oldName.substring(oldName.lastIndexOf("."));
-        String filePath = new DateTime().toString("/yyyy/MM/dd");
 
 
 
         TbArticle tbArticle = new TbArticle();
-        tbArticle.setArticleBody(body);
+        tbArticle.setArticleBody(bodycontent);
 //        tbArticle.setArticleCategory(category);
         tbArticle.setArticleDescript(description);
-//        tbArticle.setArticleImage(image);
-        tbArticle.setArticleImage(baseUrl+filePath+"/"+newName);
+        tbArticle.setArticleImage(uploadimage);
+//        tbArticle.setArticleImage(baseUrl+filePath+"/"+newName);
         tbArticle.setArticleLink(link);
 //        tbArticle.setArticlePlatform(platform);
         tbArticle.setArticleTitle(title);

@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-
 @RestController
 @RequestMapping("/api")
 public class FileUploadController {
@@ -32,7 +30,7 @@ public class FileUploadController {
 
     @Value("${IMAGE.BASE.URL}")
     private String baseUrl;
-//,consumes = "multipart/form-data"
+
     @RequestMapping(path = "/uploadimage",consumes = "multipart/form-data",produces = "application/json;charset=utf-8")
 
     public JsonDTO FileUpload(@RequestParam("file") MultipartFile uploadimage){
