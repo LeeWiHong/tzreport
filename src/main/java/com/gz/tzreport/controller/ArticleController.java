@@ -47,9 +47,6 @@ public class ArticleController {
     public JsonDTO AddArticle(@RequestParam(value = "title") String title, @RequestParam(value = "link",required = false) String link, @RequestParam(value = "platform",required = false) Integer platform, @RequestParam(value = "category",required = false) Integer category, @RequestParam(value = "description") String description, @RequestParam(value = "bodycontent") String bodycontent, @RequestParam(value = "uploadimage") String uploadimage){
         JsonDTO jsonDTO = new JsonDTO();
 
-
-
-
         TbArticle tbArticle = new TbArticle();
         tbArticle.setArticleBody(bodycontent);
         tbArticle.setArticleCategory(category);
