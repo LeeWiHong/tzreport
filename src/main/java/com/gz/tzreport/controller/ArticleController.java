@@ -52,12 +52,11 @@ public class ArticleController {
 
         TbArticle tbArticle = new TbArticle();
         tbArticle.setArticleBody(bodycontent);
-//        tbArticle.setArticleCategory(category);
+        tbArticle.setArticleCategory(category);
         tbArticle.setArticleDescript(description);
         tbArticle.setArticleImage(uploadimage);
-//        tbArticle.setArticleImage(baseUrl+filePath+"/"+newName);
         tbArticle.setArticleLink(link);
-//        tbArticle.setArticlePlatform(platform);
+        tbArticle.setArticlePlatform(platform);
         tbArticle.setArticleTitle(title);
         if (articleService.insert(tbArticle) > 0){
             jsonDTO.setJsonDTO(true, ExceptionEnum.ADD_DATA_SUCCESS.getMsgcode(),ExceptionEnum.ADD_DATA_SUCCESS.getMsgdesc(),new ArrayList<>());
