@@ -1,6 +1,8 @@
 package com.gz.tzreport.controller;
 
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.gz.tzreport.pojo.TbPlatform;
 import com.gz.tzreport.service.TbplatformServiceInterface;
 import com.gz.tzreport.uitls.ExceptionEnum;
@@ -68,9 +70,10 @@ public class PlatformController {
     }
 
     @RequestMapping("/allplatform")
-    public JsonDTO AllPlatform(){
+    public JsonDTO AllPlatform(@RequestParam(value = "pageno") int pageNo,@RequestParam(value = "pagesize") int pagesize){
         JsonDTO jsonDTO = new JsonDTO();
-        List<TbPlatform> list = tbplatformService.selectAll();
+        PageHelper.startPage(pageNo,pagesize);
+        PageInfo<TbPlatform> list = new PageInfo<>(tbplatformService.selectAll()) ;
         jsonDTO.setJsonDTO(true,ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgcode(),ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgdesc(),list);
         return jsonDTO;
     }

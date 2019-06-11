@@ -1,6 +1,9 @@
 package com.gz.tzreport.controller;
 
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.gz.tzreport.pojo.TbAdvice;
 import com.gz.tzreport.pojo.TbCategory;
 import com.gz.tzreport.service.CategoryServiceInterface;
 import com.gz.tzreport.uitls.*;
@@ -51,15 +54,11 @@ public class CategoryController {
     **/
 
     @RequestMapping("/allcategory")
-    public JsonDTO getAllCategory(){
+    public JsonDTO getAllCategory(@RequestParam(value = "pageno") int pageNo,@RequestParam(value = "pagesize") int pagesize){
         JsonDTO jsonDTO = new JsonDTO();
-        List<TbCategory> list = categoryServiceInterface.selectAll();
-        if (list.size() > 0){
-            jsonDTO.setJsonDTO(true, ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgcode(),ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgdesc(),list);
-        }
-        else {
-            jsonDTO.setJsonDTO(false,ExceptionEnum.QUERARY_DATA_FAILURE.getMsgcode(),ExceptionEnum.QUERARY_DATA_FAILURE.getMsgdesc(),new ArrayList<>());
-        }
+        PageHelper.startPage(pageNo,pagesize);
+        PageInfo<TbCategory> pageInfo = new PageInfo<>(categoryServiceInterface.selectAll());
+        jsonDTO.setJsonDTO(true,ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgcode(),ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgdesc(),pageInfo);
         return jsonDTO;
     }
 

@@ -1,5 +1,6 @@
 package com.gz.tzreport.service;
 
+import com.github.pagehelper.Page;
 import com.gz.tzreport.dao.TbArticleMapper;
 import com.gz.tzreport.pojo.TbArticle;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class ArticleServiceImp implements ArticleServiceInterface {
     }
 
     @Override
-    public List<TbArticle> selectAll() {
+    public Page<TbArticle> selectAll() {
         return tbArticleMapper.selectAll();
     }
 

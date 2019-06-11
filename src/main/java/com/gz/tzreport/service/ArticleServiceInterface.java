@@ -1,5 +1,7 @@
 package com.gz.tzreport.service;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
 import com.gz.tzreport.pojo.TbArticle;
 
 import java.util.List;
@@ -16,7 +18,7 @@ public interface ArticleServiceInterface {
     TbArticle selectByPrimaryKey(Integer articleId);
 
 
-    List<TbArticle> selectAll();
+    Page<TbArticle> selectAll();
 
     int updateByPrimaryKey(TbArticle record);
 

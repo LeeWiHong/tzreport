@@ -1,5 +1,6 @@
 package com.gz.tzreport.service;
 
+import com.github.pagehelper.Page;
 import com.gz.tzreport.dao.TbPlatformMapper;
 import com.gz.tzreport.pojo.TbPlatform;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class TbplatformServiceImp implements TbplatformServiceInterface {
     }
 
     @Override
-    public List<TbPlatform> selectAll() {
+    public Page<TbPlatform> selectAll() {
         return tbPlatformMapper.selectAll();
     }
 

@@ -55,17 +55,23 @@ public class UsersController {
         return "leewihong";
     }
 
-    @RequestMapping("/p2")
-    public JsonDTO test2(){
+    /**
+    * @description: 删除用户操作
+    *
+    * @return:
+    **/
+    @RequestMapping("/delUser")
+    public JsonDTO deleteUser(@RequestParam(value = "userid") Integer userid){
         JsonDTO jsonDTO = new JsonDTO();
-        jsonDTO.setJsonDTO(true,ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgcode(),ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgdesc(),new ArrayList<>());
+        if (usersServiceInterface.deleteByPrimaryKey(userid) > 0){
+            jsonDTO.setJsonDTO(true,ExceptionEnum.DELETE_DATA_SUCCESS.getMsgcode(),ExceptionEnum.DELETE_DATA_SUCCESS.getMsgdesc(),new ArrayList<>());
+        }
+        else {
+            jsonDTO.setJsonDTO(false,ExceptionEnum.DELETE_DATA_FAILURE.getMsgcode(),ExceptionEnum.DELETE_DATA_FAILURE.getMsgdesc(),new ArrayList<>());
+        }
         return jsonDTO;
     }
 
-    @RequestMapping("/")
-    public String test3(){
-        return "abcdefghi";
-    }
 
     /**
     * @description: 修改密码接口

@@ -1,5 +1,6 @@
 package com.gz.tzreport.service;
 
+import com.github.pagehelper.Page;
 import com.gz.tzreport.dao.TbRolesMapper;
 import com.gz.tzreport.pojo.TbRoles;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class TbrolesServiceImp implements TbrolesServiceInterface {
     }
 
     @Override
-    public List<TbRoles> selectAll() {
+    public Page<TbRoles> selectAll() {
         return tbRolesMapper.selectAll();
     }
 

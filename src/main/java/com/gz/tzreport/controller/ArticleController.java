@@ -44,7 +44,7 @@ public class ArticleController {
     private ArticleServiceInterface articleService;
 
     @RequestMapping("/addarticle")
-    public JsonDTO AddArticle(@RequestParam(value = "title") String title, @RequestParam(value = "link",required = false) String link, @RequestParam(value = "platform",required = false) Integer platform, @RequestParam(value = "category",required = false) Integer category, @RequestParam(value = "description") String description, @RequestParam(value = "bodycontent") String bodycontent, @RequestParam(value = "uploadimage") String uploadimage){
+    public JsonDTO AddArticle(@RequestParam(value = "title") String title, @RequestParam(value = "link",required = false) String link, @RequestParam(value = "platform",required = false) String platform, @RequestParam(value = "category",required = false) String category, @RequestParam(value = "description") String description, @RequestParam(value = "bodycontent") String bodycontent, @RequestParam(value = "uploadimage") String uploadimage){
         JsonDTO jsonDTO = new JsonDTO();
 
         TbArticle tbArticle = new TbArticle();
@@ -95,14 +95,6 @@ public class ArticleController {
                 jsonDTO.setJsonDTO(false,ExceptionEnum.UPDATE_DATA_FAILURE.getMsgcode(),ExceptionEnum.UPDATE_DATA_FAILURE.getMsgdesc(),new ArrayList<>());
             }
         }
-        return jsonDTO;
-    }
-    @RequestMapping("/allarticle")
-    public JsonDTO AllArticle(@RequestParam(value = "pageno") int pageno,@RequestParam(value = "pagesize") int pagesize){
-        JsonDTO jsonDTO = new JsonDTO();
-        PageHelper.startPage(pageno,pagesize);
-        PageInfo<TbArticle> pageInfo = new PageInfo<>(articleService.selectAll());
-        jsonDTO.setJsonDTO(true,ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgcode(),ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgdesc(),pageInfo);
         return jsonDTO;
     }
 

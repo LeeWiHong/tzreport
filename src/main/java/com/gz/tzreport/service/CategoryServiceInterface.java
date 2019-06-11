@@ -1,8 +1,7 @@
 package com.gz.tzreport.service;
 
+import com.github.pagehelper.Page;
 import com.gz.tzreport.pojo.TbCategory;
-
-import java.util.List;
 
 public interface CategoryServiceInterface {
 
@@ -12,7 +11,7 @@ public interface CategoryServiceInterface {
 
     TbCategory selectByPrimaryKey(Integer categoryId);
 
-    List<TbCategory> selectAll();
+    Page<TbCategory> selectAll();
 
     int updateByPrimaryKey(TbCategory record);
 }
