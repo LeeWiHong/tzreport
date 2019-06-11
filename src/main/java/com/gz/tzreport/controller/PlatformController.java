@@ -21,7 +21,7 @@ public class PlatformController {
     private TbplatformServiceInterface tbplatformService;
 
     @RequestMapping("/addplatform")
-    public JsonDTO addPlatForm(@RequestParam(value = "platname") String platname, @RequestParam("/platlink") String platlink, @RequestParam("/platdesc") String platdescription){
+    public JsonDTO addPlatForm(@RequestParam(value = "platname") String platname, @RequestParam("platlink") String platlink, @RequestParam("platdescription") String platdescription){
         JsonDTO jsonDTO = new JsonDTO();
         TbPlatform tbPlatform = new TbPlatform();
         tbPlatform.setPlatformName(platname);
