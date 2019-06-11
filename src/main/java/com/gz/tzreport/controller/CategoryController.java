@@ -63,8 +63,27 @@ public class CategoryController {
         return jsonDTO;
     }
 
+    @RequestMapping("/addcategory")
+    public JsonDTO addCategoryItem(@RequestParam("categoryname") String CategoryName, @RequestParam("imagepath") String imagepath, @RequestParam("description") String Description){
+        JsonDTO jsonDTO = new JsonDTO();
+        TbCategory tbCategory = new TbCategory();
+        tbCategory.setCategoryName(CategoryName);
+        tbCategory.setCategoryImage(imagepath);
+        tbCategory.setDescription(Description);
+        tbCategory.setCategoryType(1);
+        if (categoryServiceInterface.insert(tbCategory) > 0)
+        {
+            jsonDTO.setJsonDTO(true,ExceptionEnum.ADD_DATA_SUCCESS.getMsgcode(),ExceptionEnum.ADD_DATA_SUCCESS.getMsgdesc(),new ArrayList<>());
+        }
+        else {
+            jsonDTO.setJsonDTO(false,ExceptionEnum.ADD_DATA_FAILURE.getMsgcode(),ExceptionEnum.ADD_DATA_FAILURE.getMsgdesc(),new ArrayList<>());
+        }
+        return jsonDTO;
+    }
+
+
     @RequestMapping("/insertcateitem")
-    public JsonDTO InsertCategory(@RequestParam("/name") String CategoryName, @RequestParam("image") MultipartFile uploadFile, @RequestParam("/description") String Description){
+    public JsonDTO InsertCategory(@RequestParam("name") String CategoryName, @RequestParam("image") MultipartFile uploadFile, @RequestParam("/description") String Description){
         JsonDTO jsonDTO = new JsonDTO();
         String oldName = uploadFile.getOriginalFilename();
         String newName = IDUtils.genImageName();

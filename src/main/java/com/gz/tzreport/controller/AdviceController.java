@@ -57,7 +57,7 @@ public class AdviceController {
     }
 
     @RequestMapping("/deladvice")
-    public JsonDTO deleteAdvice(int adviceid){
+    public JsonDTO deleteAdvice(@RequestParam(value = "adviceId") int adviceid){
         JsonDTO jsonDTO = new JsonDTO();
         TbAdvice tbAdvice = adviceServiceInterface.selectByPrimaryKey(adviceid);
         if (tbAdvice != null){
