@@ -6,6 +6,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.gz.tzreport.annotation.SuperAuthorityToken;
 import com.gz.tzreport.annotation.UserLoginToken;
 import com.gz.tzreport.dao.TbUsersPersonInfo;
 import com.gz.tzreport.pojo.TbRoles;
@@ -49,7 +50,7 @@ public class UsersController {
     @Autowired
     private TokenService tokenService;
 
-    @UserLoginToken
+    @SuperAuthorityToken
     @RequestMapping("/p1")
     public String test(){
         return "leewihong";
