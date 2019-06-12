@@ -1,6 +1,7 @@
 package com.gz.tzreport.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.gz.tzreport.annotation.SuperAuthorityToken;
 import com.gz.tzreport.pojo.TbUsers;
 import com.gz.tzreport.service.*;
 import com.gz.tzreport.uitls.ExceptionEnum;
@@ -28,6 +29,7 @@ public class SumaryController {
     @Autowired
     private AdviceServiceInterface adviceServiceInterface;
 
+    @SuperAuthorityToken
     @RequestMapping("/allsummary")
     public JsonDTO getAllSummary(){
         JsonDTO jsonDTO = new JsonDTO();
