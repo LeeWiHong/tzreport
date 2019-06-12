@@ -76,7 +76,7 @@ public class AdviceController {
     }
 
     @RequestMapping("/alladvice")
-    public JsonDTO AllDdvice(@RequestParam(defaultValue = "1") int pageNo,@RequestParam(defaultValue = "10") int pagesize){
+    public JsonDTO AllDdvice(@RequestParam(value = "pageno") int pageNo,@RequestParam(value = "pagesize") int pagesize){
         JsonDTO jsonDTO = new JsonDTO();
         PageHelper.startPage(pageNo,pagesize);
         PageInfo<TbAdvice>pageInfo = new PageInfo<>(adviceServiceInterface.selectAll());
