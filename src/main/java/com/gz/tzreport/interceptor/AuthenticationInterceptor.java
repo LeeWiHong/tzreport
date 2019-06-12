@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.gz.tzreport.annotation.PassToken;
+import com.gz.tzreport.annotation.SuperAuthorityToken;
 import com.gz.tzreport.annotation.UserLoginToken;
 import com.gz.tzreport.pojo.TbUsers;
 import com.gz.tzreport.service.UsersServiceInterface;
@@ -41,7 +42,43 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 return true;
             }
         }
-        //检查有没有需要用户权限的注解
+
+//        检查是否用户有权限进行操作
+        if (method.isAnnotationPresent(SuperAuthorityToken.class)){
+            SuperAuthorityToken superAuthorityToken = method.getAnnotation(SuperAuthorityToken.class);
+            if (superAuthorityToken.required()){
+                if (token == null){
+                    throw new CustomException(ExceptionEnum.LOGIN_TOKEN_NULL.getHttpStatus(),ExceptionEnum.LOGIN_TOKEN_NULL.getMsgcode(),ExceptionEnum.LOGIN_TOKEN_NULL.getMsgdesc());
+                }
+                String userState ;
+                String telephone ;
+                try {
+                    telephone = JWT.decode(token).getAudience().get(0);
+                    userState = JWT.decode(token).getAudience().get(1);
+                }catch (JWTDecodeException j){
+                    throw new CustomException(ExceptionEnum.LOGIN_TOKEN_UNDECODE.getHttpStatus(),ExceptionEnum.LOGIN_TOKEN_UNDECODE.getMsgcode(),ExceptionEnum.LOGIN_TOKEN_UNDECODE.getMsgdesc());
+                }
+
+                List<TbUsers> tbUsersList = usersServiceInterface.selectByTelephone(telephone);
+                if (tbUsersList == null) {
+                    throw new CustomException(ExceptionEnum.LOGIN_USER_NOTEXISTED.getHttpStatus(),ExceptionEnum.LOGIN_USER_NOTEXISTED.getMsgcode(),ExceptionEnum.LOGIN_USER_NOTEXISTED.getMsgdesc());
+                }
+                // 验证 token
+                JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(tbUsersList.get(0).getUserPassword())).build();
+                try {
+                    jwtVerifier.verify(token);
+                } catch (JWTVerificationException e) {
+                    throw new CustomException(ExceptionEnum.LOGIN_TOKEN_INVALID.getHttpStatus(),ExceptionEnum.LOGIN_TOKEN_INVALID.getMsgcode(),ExceptionEnum.LOGIN_TOKEN_INVALID.getMsgdesc());
+                }
+                if (userState.equals(tbUsersList.get(0).getUserState())){
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+        }
+        //检查有没有需要用户存在权限的注解
         if (method.isAnnotationPresent(UserLoginToken.class)) {
             UserLoginToken userLoginToken = method.getAnnotation(UserLoginToken.class);
             if (userLoginToken.required()) {
