@@ -12,6 +12,8 @@ import com.gz.tzreport.pojo.TbUsers;
 import com.gz.tzreport.service.UsersServiceInterface;
 import com.gz.tzreport.uitls.CustomException;
 import com.gz.tzreport.uitls.ExceptionEnum;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -53,28 +55,29 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 String userState ;
                 String telephone ;
                 try {
-                    telephone = JWT.decode(token).getAudience().get(0);
-                    userState = JWT.decode(token).getAudience().get(1);
+                    telephone = JWT.decode(token).getClaim("telephone").asString();
+                    userState = JWT.decode(token).getClaim("state").asString();
+
                 }catch (JWTDecodeException j){
                     throw new CustomException(ExceptionEnum.LOGIN_TOKEN_UNDECODE.getHttpStatus(),ExceptionEnum.LOGIN_TOKEN_UNDECODE.getMsgcode(),ExceptionEnum.LOGIN_TOKEN_UNDECODE.getMsgdesc());
                 }
+                System.out.println(telephone+"ffffff");
+                System.out.println(userState+"dddddd");
 
                 List<TbUsers> tbUsersList = usersServiceInterface.selectByTelephone(telephone);
-                if (tbUsersList == null) {
+                if (tbUsersList.size() == 0) {
                     throw new CustomException(ExceptionEnum.LOGIN_USER_NOTEXISTED.getHttpStatus(),ExceptionEnum.LOGIN_USER_NOTEXISTED.getMsgcode(),ExceptionEnum.LOGIN_USER_NOTEXISTED.getMsgdesc());
                 }
-                // 验证 token
-                JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(tbUsersList.get(0).getUserPassword())).build();
-                try {
-                    jwtVerifier.verify(token);
-                } catch (JWTVerificationException e) {
-                    throw new CustomException(ExceptionEnum.LOGIN_TOKEN_INVALID.getHttpStatus(),ExceptionEnum.LOGIN_TOKEN_INVALID.getMsgcode(),ExceptionEnum.LOGIN_TOKEN_INVALID.getMsgdesc());
-                }
-                if (userState.equals(tbUsersList.get(0).getUserState())){
-                    return true;
-                }
                 else {
+                    Claims claims = Jwts.parser()
+                            .setSigningKey(tbUsersList.get(0).getUserPassword())
+                            .parseClaimsJws(token).getBody();
+//                   验证权限是否为1超管
+                    if (claims.get("state").equals("1")){
+                        return true;
+                    }
                     return false;
+
                 }
             }
         }
@@ -89,25 +92,21 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 // 获取 token 中的 user id
                 String userphone;
                 try {
-                    userphone = JWT.decode(token).getAudience().get(0);
+                    userphone = JWT.decode(token).getClaim("telephone").asString();
                 } catch (JWTDecodeException j) {
                     throw new CustomException(ExceptionEnum.LOGIN_TOKEN_UNDECODE.getHttpStatus(),ExceptionEnum.LOGIN_TOKEN_UNDECODE.getMsgcode(),ExceptionEnum.LOGIN_TOKEN_UNDECODE.getMsgdesc());
                 }
                 List<TbUsers> tbUsersList = usersServiceInterface.selectByTelephone(userphone);
-                if (tbUsersList == null) {
+                if (tbUsersList.size() == 0) {
                     throw new CustomException(ExceptionEnum.LOGIN_USER_NOTEXISTED.getHttpStatus(),ExceptionEnum.LOGIN_USER_NOTEXISTED.getMsgcode(),ExceptionEnum.LOGIN_USER_NOTEXISTED.getMsgdesc());
                 }
-                // 验证 token
-                JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(tbUsersList.get(0).getUserPassword())).build();
-                try {
-                    jwtVerifier.verify(token);
-                } catch (JWTVerificationException e) {
-                    throw new CustomException(ExceptionEnum.LOGIN_TOKEN_INVALID.getHttpStatus(),ExceptionEnum.LOGIN_TOKEN_INVALID.getMsgcode(),ExceptionEnum.LOGIN_TOKEN_INVALID.getMsgdesc());
+                else {
+                    return true;
+                    }
                 }
-                return true;
+
             }
-        }
-        return true;
+            return true;
     }
 
     @Override

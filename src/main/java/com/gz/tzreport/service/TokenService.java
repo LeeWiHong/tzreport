@@ -3,7 +3,14 @@ package com.gz.tzreport.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.gz.tzreport.pojo.TbUsers;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service("TokenService")
 public class TokenService {
@@ -11,10 +18,12 @@ public class TokenService {
     public String getToken(TbUsers tbUsers) {
 
         String token = "";
-        token = JWT.create()
-                .withAudience(tbUsers.getUserTelephone().toString())
-                .withAudience(tbUsers.getUserState().toString())
-                .sign(Algorithm.HMAC256(tbUsers.getUserPassword()));
-        return token;
+        Map<String,Object> claims = new HashMap<String,Object>();
+        claims.put("telephone",tbUsers.getUserTelephone());
+        claims.put("state",tbUsers.getUserState());
+        JwtBuilder builder = Jwts.builder()
+                .setClaims(claims)
+                .signWith(SignatureAlgorithm.HS256,tbUsers.getUserPassword());
+        return builder.compact();
     }
 }
