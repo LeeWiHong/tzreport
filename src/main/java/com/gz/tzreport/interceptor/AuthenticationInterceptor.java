@@ -58,8 +58,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 }catch (JWTDecodeException j){
                     throw new CustomException(ExceptionEnum.LOGIN_TOKEN_UNDECODE.getHttpStatus(),ExceptionEnum.LOGIN_TOKEN_UNDECODE.getMsgcode(),ExceptionEnum.LOGIN_TOKEN_UNDECODE.getMsgdesc());
                 }
-                System.out.println(telephone+"ffffff");
-                System.out.println(userState+"dddddd");
 
                 List<TbUsers> tbUsersList = usersServiceInterface.selectByTelephone(telephone);
                 if (tbUsersList.size() == 0) {

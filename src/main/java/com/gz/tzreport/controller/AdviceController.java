@@ -59,7 +59,7 @@ public class AdviceController {
 
     @SuperAuthorityToken
     @RequestMapping("/deladvice")
-    public JsonDTO deleteAdvice(@RequestParam(value = "adviceId") int adviceid){
+    public JsonDTO deleteAdvice(@RequestParam(value = "adviceid") int adviceid){
         JsonDTO jsonDTO = new JsonDTO();
         TbAdvice tbAdvice = adviceServiceInterface.selectByPrimaryKey(adviceid);
         if (tbAdvice != null){

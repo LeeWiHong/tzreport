@@ -35,6 +35,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 
 @RestController
 
@@ -174,8 +175,9 @@ public class UsersController {
         JsonDTO jsonDTO = new JsonDTO();
         if (ValidatorFormatCheckTools.isPhoneLegal(telephone)){
 //            1.根据电话号码查询用户
-            TbUsers tbUsers = usersServiceInterface.selectByTelephone(telephone).get(0);
-            if (tbUsers != null){
+            List<TbUsers> list = usersServiceInterface.selectByTelephone(telephone);
+            if (list.size() != 0){
+                TbUsers tbUsers = list.get(0);
                 String MD5Password = null;
 //                2.解密传过来的密码
                 try {
