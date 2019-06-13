@@ -23,6 +23,7 @@ public class PlatformController {
     @Autowired
     private TbplatformServiceInterface tbplatformService;
 
+    @SuperAuthorityToken
     @RequestMapping("/addplatform")
     public JsonDTO addPlatForm(@RequestParam(value = "platname") String platname, @RequestParam("platlink") String platlink, @RequestParam("platdescription") String platdescription){
         JsonDTO jsonDTO = new JsonDTO();
@@ -39,6 +40,7 @@ public class PlatformController {
         return jsonDTO;
     }
 
+    @SuperAuthorityToken
     @RequestMapping("/delplatform")
     public JsonDTO deletePlatform(@RequestParam(value = "platid") int platid){
         JsonDTO jsonDTO = new JsonDTO();

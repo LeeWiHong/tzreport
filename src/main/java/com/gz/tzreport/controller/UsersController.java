@@ -61,6 +61,7 @@ public class UsersController {
     *
     * @return:
     **/
+    @SuperAuthorityToken
     @RequestMapping("/delUser")
     public JsonDTO deleteUser(@RequestParam(value = "userid") Integer userid){
         JsonDTO jsonDTO = new JsonDTO();
@@ -519,6 +520,7 @@ public class UsersController {
     }
 
 
+    @SuperAuthorityToken
     @RequestMapping("/alluser")
     public JsonDTO getAllUser(@RequestParam(value = "pageno") int pageno,@RequestParam(value = "pagesize") int pagesize){
         JsonDTO jsonDTO = new JsonDTO();

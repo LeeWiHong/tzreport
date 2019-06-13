@@ -3,6 +3,7 @@ package com.gz.tzreport.controller;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.gz.tzreport.annotation.SuperAuthorityToken;
 import com.gz.tzreport.pojo.TbArticle;
 import com.gz.tzreport.service.ArticleServiceInterface;
 import com.gz.tzreport.uitls.ExceptionEnum;
@@ -43,6 +44,7 @@ public class ArticleController {
     @Autowired
     private ArticleServiceInterface articleService;
 
+    @SuperAuthorityToken
     @RequestMapping("/addarticle")
     public JsonDTO AddArticle(@RequestParam(value = "title") String title, @RequestParam(value = "link",required = false) String link, @RequestParam(value = "platform",required = false) String platform, @RequestParam(value = "category",required = false) String category, @RequestParam(value = "description") String description, @RequestParam(value = "bodycontent") String bodycontent, @RequestParam(value = "uploadimage") String uploadimage){
         JsonDTO jsonDTO = new JsonDTO();
@@ -64,6 +66,7 @@ public class ArticleController {
         return jsonDTO;
     }
 
+    @SuperAuthorityToken
     @RequestMapping("/delarticle")
     public JsonDTO deleteArticle(@RequestParam(value = "articleid") Integer articleid){
         JsonDTO jsonDTO = new JsonDTO();

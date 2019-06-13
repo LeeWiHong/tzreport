@@ -3,6 +3,7 @@ package com.gz.tzreport.controller;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.gz.tzreport.annotation.SuperAuthorityToken;
 import com.gz.tzreport.annotation.UserLoginToken;
 import com.gz.tzreport.dao.TbUsersMapper;
 import com.gz.tzreport.pojo.TbAdvice;
@@ -56,6 +57,7 @@ public class AdviceController {
         return jsonDTO;
     }
 
+    @SuperAuthorityToken
     @RequestMapping("/deladvice")
     public JsonDTO deleteAdvice(@RequestParam(value = "adviceId") int adviceid){
         JsonDTO jsonDTO = new JsonDTO();
@@ -75,6 +77,7 @@ public class AdviceController {
         return jsonDTO;
     }
 
+    @SuperAuthorityToken
     @RequestMapping("/alladvice")
     public JsonDTO AllDdvice(@RequestParam(value = "pageno") int pageNo,@RequestParam(value = "pagesize") int pagesize){
         JsonDTO jsonDTO = new JsonDTO();

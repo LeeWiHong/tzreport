@@ -3,6 +3,7 @@ package com.gz.tzreport.controller;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.gz.tzreport.annotation.SuperAuthorityToken;
 import com.gz.tzreport.pojo.TbAdvice;
 import com.gz.tzreport.pojo.TbCategory;
 import com.gz.tzreport.service.CategoryServiceInterface;
@@ -62,6 +63,7 @@ public class CategoryController {
         return jsonDTO;
     }
 
+    @SuperAuthorityToken
     @RequestMapping("/addcategory")
     public JsonDTO addCategoryItem(@RequestParam("categoryname") String CategoryName, @RequestParam("imagepath") String imagepath, @RequestParam("description") String Description){
         JsonDTO jsonDTO = new JsonDTO();
@@ -150,6 +152,7 @@ public class CategoryController {
         return jsonDTO;
     }
 
+    @SuperAuthorityToken
     @RequestMapping("/delcategory")
     public JsonDTO deleteCategory(@RequestParam("catid") int catid){
         JsonDTO jsonDTO = new JsonDTO();

@@ -1,10 +1,7 @@
 package com.gz.tzreport.interceptor;
 
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.gz.tzreport.annotation.PassToken;
 import com.gz.tzreport.annotation.SuperAuthorityToken;
 import com.gz.tzreport.annotation.UserLoginToken;
