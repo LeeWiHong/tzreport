@@ -110,6 +110,18 @@ public class ArticleController {
         jsonDTO.setJsonDTO(true,ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgcode(),ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgdesc(),pageInfo);
         return jsonDTO;
     }
+    @RequestMapping("/articledetail")
+    public JsonDTO getArticleDetail(@RequestParam(value = "articleid") int articleid){
+        JsonDTO jsonDTO = new JsonDTO();
+        TbArticle tbArticle = articleService.selectByPrimaryKey(articleid);
+        if (tbArticle != null){
+            jsonDTO.setJsonDTO(true,ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgcode(),ExceptionEnum.QUERARY_DATA_SUCCESS.getMsgdesc(),tbArticle);
+        }
+        else {
+            jsonDTO.setJsonDTO(false, ExceptionEnum.QUERARY_DATA_FAILURE.getMsgcode(), ExceptionEnum.QUERARY_DATA_FAILURE.getMsgdesc(), new ArrayList<>());
+        }
+        return jsonDTO;
+    }
 
 
 }
