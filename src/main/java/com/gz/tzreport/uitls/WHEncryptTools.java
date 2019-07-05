@@ -93,8 +93,9 @@ public class WHEncryptTools {
     **/
     public static PrivateKey getPemPrivateKey(String filename, String algorithm) throws Exception {
 
-
-        BufferedReader br = new BufferedReader(new FileReader(filename));
+        InputStream in = WHEncryptTools.class.getClassLoader().getResource(filename).openStream();
+//        BufferedReader br = new BufferedReader(new FileReader(filename));
+        BufferedReader br = new BufferedReader(new InputStreamReader(in));
         Security.addProvider(new BouncyCastleProvider());
 
         PEMReader pp = new PEMReader(br);
@@ -113,7 +114,9 @@ public class WHEncryptTools {
     * @return:
     **/
     public static PublicKey getPemPublicKey(String pubKeyStr) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-        BufferedReader br = new BufferedReader(new FileReader(pubKeyStr));
+        InputStream in = WHEncryptTools.class.getClassLoader().getResource(pubKeyStr).openStream();
+//        BufferedReader br = new BufferedReader(new FileReader(pubKeyStr));
+        BufferedReader br = new BufferedReader(new InputStreamReader(in));
         Security.addProvider(new BouncyCastleProvider());
         PEMReader pp = new PEMReader(br);
         PemObject pem = pp.readPemObject();
