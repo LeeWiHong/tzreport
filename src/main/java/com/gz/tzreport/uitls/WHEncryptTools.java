@@ -92,8 +92,11 @@ public class WHEncryptTools {
     * @return: 
     **/
     public static PrivateKey getPemPrivateKey(String filename, String algorithm) throws Exception {
+
+
         BufferedReader br = new BufferedReader(new FileReader(filename));
         Security.addProvider(new BouncyCastleProvider());
+
         PEMReader pp = new PEMReader(br);
         PemObject pem = pp.readPemObject();
         byte[] content = pem.getContent();

@@ -30,10 +30,12 @@ public class TzreportApplication {
 //            WHEncryptTools.saveKeyAsPemFormat(publicKey, "rsa_public_key.pem");
 //            System.out.println("新建公钥是:" + new String(Base64.getEncoder().encode(publicKey.getEncoded())));
 
-            PrivateKey privateKey2 = WHEncryptTools.getPemPrivateKey("rsa_private_key.pem", "RSA");
+            String privateFilePath = TzreportApplication.class.getClassLoader().getResource("rsa_private_key.pem").getPath();
+            PrivateKey privateKey2 = WHEncryptTools.getPemPrivateKey(privateFilePath, "RSA");
             System.out.println("读取私钥是:" + new String(Base64.getEncoder().encode(privateKey2.getEncoded())));
 
-            PublicKey publicKey2 = WHEncryptTools.getPemPublicKey("rsa_public_key.pem");
+            String publicFilePaht = TzreportApplication.class.getClassLoader().getResource("rsa_public_key.pem").getPath();
+            PublicKey publicKey2 = WHEncryptTools.getPemPublicKey(publicFilePaht);
             System.out.println("读取公钥是:" + new String(Base64.getEncoder().encode(publicKey2.getEncoded())));
 
             String teststr = "leewihong";
